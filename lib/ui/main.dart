@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:housing_manager/bloc/counter_bloc.dart';
-import 'package:housing_manager/bloc/counter_provider.dart';
+import 'package:housing_manager/bloc/main_bloc.dart';
+import 'package:housing_manager/bloc/main_provider.dart';
 import 'package:housing_manager/settings/AppConfig.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

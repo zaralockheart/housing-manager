@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:housing_manager/bloc/counter_bloc.dart';
+import 'package:housing_manager/bloc/main_bloc.dart';
 
 class MainProvider extends InheritedWidget {
   final MainBloc mainBloc;
