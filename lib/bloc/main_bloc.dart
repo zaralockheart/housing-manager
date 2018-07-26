@@ -1,24 +1,33 @@
-import 'dart:async';
-import 'package:rxdart/subjects.dart';
+import 'package:housing_manager/ui/sign_in/sign_in_bloc.dart';
+import 'package:housing_manager/ui/sign_in/sign_in_model.dart';
 
 class MainBloc {
+  final SignInBloc signInBloc = SignInBloc();
 
-  var count = 0;
+  final SignInModel signInModel = SignInModel();
 
-  Sink<int> get itemCount2 => _additionController.sink;
-
-  final _additionController = StreamController<int>();
-
-  Stream<int> get itemCount => _itemCountSubject.stream;
-
-  final _itemCountSubject = BehaviorSubject<int>();
+//  var count = 0;
+//  Sink<int> get itemCount2 => _additionController.sink;
+//  final _additionController = StreamController<int>();
+//  Stream<int> get itemCount => _itemCountSubject.stream;
+//  final _itemCountSubject = BehaviorSubject<int>();
 
   MainBloc() {
-    _additionController.stream.listen(_handle);
+    _handleSignIn();
   }
 
-  void _handle(int counter) {
-    count = count + counter;
-    _itemCountSubject.add(count);
+  _handleSignIn() {
+    signInBloc.emailModelController.stream.listen(_handleSignInEmail);
+    signInBloc.passwordController.stream.listen(_handleSignInPassword);
+  }
+
+  void _handleSignInEmail(String email) {
+    this.signInModel.email = email;
+    signInBloc.emailModelSubject.add(email);
+  }
+
+  void _handleSignInPassword(String password) {
+    this.signInModel.password = password;
+    signInBloc.passwordSubject.add(password);
   }
 }

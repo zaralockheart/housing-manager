@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:housing_manager/bloc/main_bloc.dart';
 import 'package:housing_manager/bloc/main_provider.dart';
+import 'package:housing_manager/generated/i18n.dart';
 import 'package:housing_manager/settings/AppConfig.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:housing_manager/ui/sign_in/sign_in.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -10,12 +12,16 @@ class MyApp extends StatelessWidget {
     final appConfig = AppConfig.of(context);
     return MainProvider(
       mainBloc: MainBloc(),
-      child: new MaterialApp(
+      child: MaterialApp(
+        localizationsDelegates: [S.delegate],
+        supportedLocales: S.delegate.supportedLocales,
+        localeResolutionCallback:
+            S.delegate.resolution(fallback: new Locale("en", "")),
         title: appConfig.appName,
-        theme: new ThemeData(
-          primarySwatch: Colors.blue,
+        theme: ThemeData(
+          primaryColor: Colors.white,
         ),
-        home: new MyHomePage(title: appConfig.appName),
+        home: SignIn(title: appConfig.appName),
       ),
     );
   }
@@ -27,43 +33,44 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter({MainBloc bloc}) {
-    bloc.itemCount2.add(2);
+//    bloc.itemCount2.add(1);
   }
 
   @override
   Widget build(BuildContext context) {
-
     final MainBloc counterBloc = MainProvider.of(context);
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
-      body: new Center(
-        child: new StreamBuilder<QuerySnapshot>(
+      body: Center(
+        child: StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance.collection('bandnames').snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) return new Text('Loading...');
-            return new ListView(
-              children: snapshot.data.documents.map((DocumentSnapshot document) {
-                return new ListTile(
-                  title: new Text(document['name']),
-                  subtitle: new Text(document['votes'].toString()),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) return Text('Loading...');
+            return ListView(
+              children:
+                  snapshot.data.documents.map((DocumentSnapshot document) {
+                return ListTile(
+                  title: Text(document['name']),
+                  subtitle: Text(document['votes'].toString()),
                 );
               }).toList(),
             );
           },
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () => _incrementCounter(bloc: counterBloc),
         tooltip: 'Increment',
-        child: new Icon(Icons.add),
+        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
