@@ -23,7 +23,8 @@ class S implements WidgetsLocalizations {
 
   String get emailHint => "Please enter your email";
   String get passwordHint => "Please enter your password";
-  String get signInSignUp => "Sign In / Sign Up";
+  String get signIn => "Sign In";
+  String get signUp => "Sign Up";
 }
 
 class en extends S {

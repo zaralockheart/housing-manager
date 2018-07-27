@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housing_manager/bloc/main_bloc.dart';
 import 'package:housing_manager/bloc/main_provider.dart';
 import 'package:housing_manager/generated/i18n.dart';
 import 'package:housing_manager/settings/AppConfig.dart';
+import 'package:housing_manager/ui/home/home.dart';
 import 'package:housing_manager/ui/sign_in/sign_in.dart';
 
 class MyApp extends StatelessWidget {
@@ -21,7 +23,15 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Colors.white,
         ),
-        home: SignIn(title: appConfig.appName),
+        home: FutureBuilder<FirebaseUser>(
+            future: FirebaseAuth.instance.currentUser(),
+            builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+              if (!snapshot.hasData) {
+                return SignIn(title: appConfig.appName);
+              } else {
+                return Home(currentUserEmail: snapshot.data.email);
+              }
+            }),
       ),
     );
   }
