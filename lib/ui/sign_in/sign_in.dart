@@ -35,44 +35,73 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     final MainBloc counterBloc = MainProvider.of(context);
     return Scaffold(
-      backgroundColor: Colors.lightBlueAccent,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: RoundTextField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: emailController,
-                  hint: S.of(context).emailHint,
-                )),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: RoundTextField(
-                controller: passwordlController,
-                obscureText: true,
-                hint: S.of(context).passwordHint,
+      body: new Container(
+        decoration: new BoxDecoration(
+          image: new DecorationImage(
+            image: new AssetImage("res/images/background.jpeg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Stack(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: RoundTextField(
+                        keyboardType: TextInputType.emailAddress,
+                        controller: emailController,
+                        hint: S.of(context).emailHint,
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: RoundTextField(
+                      controller: passwordlController,
+                      obscureText: true,
+                      hint: S.of(context).passwordHint,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: RoundedFlatButtonField(
+                        borderSide: BorderSide(color: Colors.black),
+                        buttonText: S.of(context).signIn,
+                        onPress: () => _handleOnPress(counterBloc)),
+                  ),
+                  Expanded(
+                    child: Container(),
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: RoundedFlatButtonField(
-                  buttonText: S.of(context).signIn,
-                  onPress: () => _handleOnPress(counterBloc)),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: RoundedFlatButtonField(
-                  buttonText: S.of(context).signUp,
-                  onPress: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUp()),
-                  )),
-            ),
-          ],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 50.0),
+                    child: RoundedFlatButtonField(
+                        borderSide: BorderSide(color: Colors.white),
+                        hasBackgroundColor: false,
+                        buttonText: S.of(context).signUp,
+                        onPress: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SignUp()),
+                            )),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

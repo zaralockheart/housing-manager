@@ -1,6 +1,7 @@
 {
   "passwordHint": "Please enter your password",
   "emailHint": "Please enter your email",
+  "confirmPasswordHint": "Please confirm your password",
   "signIn": "Sign In",
   "signUp": "Sign Up"
 }

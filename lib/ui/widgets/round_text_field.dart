@@ -27,7 +27,7 @@ class _RoundTextFieldState extends State<RoundTextField> {
     return Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            color: Colors.white),
+            color: Color.fromRGBO(255, 255, 255, 0.5)),
         child: TextFormField(
           keyboardType: widget.keyboardType,
           obscureText: widget.obscureText,

@@ -21,6 +21,7 @@ class S implements WidgetsLocalizations {
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
+  String get confirmPasswordHint => "Please confirm your password";
   String get emailHint => "Please enter your email";
   String get passwordHint => "Please enter your password";
   String get signIn => "Sign In";
