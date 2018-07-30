@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:housing_manager/bloc/main_bloc.dart';
-import 'package:housing_manager/bloc/main_provider.dart';
 import 'package:housing_manager/generated/i18n.dart';
+import 'package:housing_manager/ui/sign_up/ui/community_creation.dart';
 import 'package:housing_manager/ui/sign_up/ui/sign_up.dart';
 import 'package:housing_manager/ui/widgets/round_text_field.dart';
 import 'package:housing_manager/ui/widgets/rounded_flat_button.dart';
@@ -18,22 +17,46 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final emailController = TextEditingController();
-  final passwordlController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  _handleOnPress(MainBloc mainbloc) {
+  _onSignIn() {
     FirebaseAuth.instance
         .signInWithEmailAndPassword(
-            email: emailController.text, password: passwordlController.text)
+        email: emailController.text, password: passwordController.text)
         .then((onValue) {
-      print("onValue sign in $onValue");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                CommunityCreation(
+                    isCreating: false, isSigningIn: true,
+                    email: emailController.text)),
+      );
     }).catchError((onError) {
       print("onError sign in $onError");
     });
   }
 
+
+  _onPressSignUp() =>
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SignUp()),
+      );
+
+  _signInEditText({controller, hint, obscureText}) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: RoundTextField(
+          controller: controller,
+          obscureText: obscureText,
+          hint: hint,
+        ),
+      );
+
+
   @override
   Widget build(BuildContext context) {
-    final MainBloc counterBloc = MainProvider.of(context);
     return Scaffold(
       body: new Container(
         decoration: new BoxDecoration(
@@ -53,27 +76,26 @@ class _SignInState extends State<SignIn> {
                   Expanded(
                     child: Container(),
                   ),
+                  _signInEditText(
+                      controller: emailController,
+                      hint: S
+                          .of(context)
+                          .emailHint,
+                      obscureText: false),
+                  _signInEditText(
+                      controller: passwordController,
+                      hint: S
+                          .of(context)
+                          .passwordHint,
+                      obscureText: true),
                   Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: RoundTextField(
-                        keyboardType: TextInputType.emailAddress,
-                        controller: emailController,
-                        hint: S.of(context).emailHint,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: RoundTextField(
-                      controller: passwordlController,
-                      obscureText: true,
-                      hint: S.of(context).passwordHint,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: RoundedFlatButtonField(
                         borderSide: BorderSide(color: Colors.black),
-                        buttonText: S.of(context).signIn,
-                        onPress: () => _handleOnPress(counterBloc)),
+                        buttonText: S
+                            .of(context)
+                            .signIn,
+                        onPress: _onSignIn),
                   ),
                   Expanded(
                     child: Container(),
@@ -88,16 +110,15 @@ class _SignInState extends State<SignIn> {
                     child: Container(),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 50.0),
-                    child: RoundedFlatButtonField(
+                      padding: const EdgeInsets.only(bottom: 50.0),
+                      child: RoundedFlatButtonField(
                         borderSide: BorderSide(color: Colors.white),
                         hasBackgroundColor: false,
-                        buttonText: S.of(context).signUp,
-                        onPress: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => SignUp()),
-                            )),
-                  ),
+                        buttonText: S
+                            .of(context)
+                            .signUp,
+                        onPress: _onPressSignUp,
+                      )),
                 ],
               )
             ],

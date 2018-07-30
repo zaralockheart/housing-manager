@@ -10,9 +10,11 @@ import 'package:housing_manager/ui/widgets/rounded_flat_button.dart';
 
 class CommunityCreation extends StatefulWidget {
   final bool isCreating;
+  final bool isSigningIn;
   final String email;
 
-  const CommunityCreation({Key key, this.isCreating, this.email})
+  const CommunityCreation(
+      {Key key, this.isCreating, this.email, this.isSigningIn = false})
       : super(key: key);
 
   @override
@@ -43,7 +45,17 @@ class _CommunityCreationState extends State<CommunityCreation> {
             }
           }
         } else {
-          _createCommunity(_getReference());
+          if (widget.isSigningIn) {
+            _getReference().snapshots().map((QuerySnapshot snapshot) {
+              snapshot.documents.map((DocumentSnapshot docSnapshot) {
+                if (docSnapshot['email'] == widget.email) {
+                  _navigateToHome();
+                }
+              }).toList();
+            }).toList();
+          } else {
+            _createCommunity(_getReference());
+          }
         }
       });
     });
@@ -67,14 +79,19 @@ class _CommunityCreationState extends State<CommunityCreation> {
           SignUpModel.toJson(email: onValue, adminStatus: widget.isCreating);
       collectionRefence.add(signUpModel);
 
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Home(
-                    community: communityTextController.text,
-                    currentUserEmail: widget.email,
-                  )));
+      _navigateToHome();
     });
+  }
+
+  _navigateToHome() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Home(
+                  community: communityTextController.text,
+                  currentUserEmail: widget.email,
+                )));
   }
 
   textInput() {

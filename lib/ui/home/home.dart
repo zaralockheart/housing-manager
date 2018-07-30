@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:housing_manager/ui/home/home_appbar.dart';
 
 class Home extends StatefulWidget {
   final currentUserEmail;
@@ -31,23 +31,10 @@ class _HomeState extends State<Home> {
     return innerList;
   }
 
-  _exitApp() {
-    FirebaseAuth.instance.signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child:
-                IconButton(icon: Icon(Icons.exit_to_app), onPressed: _exitApp),
-          )
-        ],
-      ),
+      appBar: HomeAppbar(),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
