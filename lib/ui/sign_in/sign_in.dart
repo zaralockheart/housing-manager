@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:housing_manager/bloc/main_bloc.dart';
 import 'package:housing_manager/bloc/main_provider.dart';
 import 'package:housing_manager/generated/i18n.dart';
-import 'package:housing_manager/ui/sign_up/sign_up.dart';
+import 'package:housing_manager/ui/sign_up/ui/sign_up.dart';
 import 'package:housing_manager/ui/widgets/round_text_field.dart';
 import 'package:housing_manager/ui/widgets/rounded_flat_button.dart';
 

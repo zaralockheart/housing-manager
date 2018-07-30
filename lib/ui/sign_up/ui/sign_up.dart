@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housing_manager/generated/i18n.dart';
+import 'package:housing_manager/ui/sign_up/ui/community_creation.dart';
 import 'package:housing_manager/ui/widgets/rounded_flat_button.dart';
 
 class SignUp extends StatefulWidget {
@@ -12,7 +14,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  _signUpUser(context) {
+  _signUpUser({BuildContext context, bool isCreating}) {
     String errorMessage = "";
     if (passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty ||
@@ -27,6 +29,22 @@ class _SignUpState extends State<SignUp> {
 
     if (errorMessage.isNotEmpty) {
       Scaffold.of(context).showSnackBar(snackBar);
+    } else {
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text)
+          .then((FirebaseUser firebaseUser) {
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CommunityCreation(isCreating: isCreating)),
+        );
+      }).catchError((onError) {
+        Scaffold
+            .of(context)
+            .showSnackBar(SnackBar(content: Text(onError.details)));
+      });
     }
   }
 
@@ -81,8 +99,18 @@ class _SignUpState extends State<SignUp> {
               child: RoundedFlatButtonField(
                   borderSide: BorderSide(color: Colors.white),
                   hasBackgroundColor: false,
-                  buttonText: S.of(context).signUp,
-                  onPress: () => _signUpUser(context)),
+                  buttonText: S.of(context).createCommunity,
+                  onPress: () =>
+                      _signUpUser(context: context, isCreating: true)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 50.0),
+              child: RoundedFlatButtonField(
+                  borderSide: BorderSide(color: Colors.white),
+                  hasBackgroundColor: false,
+                  buttonText: S.of(context).joinCommunity,
+                  onPress: () =>
+                      _signUpUser(context: context, isCreating: false)),
             ),
           ],
         ),

@@ -7,6 +7,7 @@ import 'package:housing_manager/generated/i18n.dart';
 import 'package:housing_manager/settings/AppConfig.dart';
 import 'package:housing_manager/ui/home/home.dart';
 import 'package:housing_manager/ui/sign_in/sign_in.dart';
+import 'package:housing_manager/ui/sign_up/ui/community_creation.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
         ),
         home: FutureBuilder<FirebaseUser>(
             future: FirebaseAuth.instance.currentUser(),
-            builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
               if (!snapshot.hasData) {
                 return SignIn(title: appConfig.appName);
               } else {
