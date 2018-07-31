@@ -16,12 +16,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+
   List<Widget> _listBuilder(AsyncSnapshot<QuerySnapshot> snapshot) {
     List<Widget> innerList = <Widget>[];
-    snapshot.data.documents.map((DocumentSnapshot document) {
+    snapshot.data.documents.map((DocumentSnapshot document) async {
       var docId = '';
 
-      Firestore.instance.runTransaction((Transaction transaction) async {
+      await Firestore.instance.runTransaction((Transaction transaction) async {
         await Firestore.instance
             .collection('suakasih')
             .where('email', isEqualTo: widget.currentUserEmail)
@@ -38,18 +40,19 @@ class _HomeState extends State<Home> {
         return;
       });
 
-      if (document['paymentStatus'] == null) {
-        innerList.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[Text('No value')]));
-      } else {
-        document['paymentStatus'].map((innerDocument) {
+      var payments = Firestore.instance.collection('suakasih/$docId/${DateTime
+          .now()
+          .year}');
+
+      await payments.getDocuments().then((QuerySnapshot querysnapshot) {
+        querysnapshot.documents.map((DocumentSnapshot documentsnapshot) {
+          print(documentsnapshot.data['paymentStatus']);
           innerList.add(ListTile(
-            title: Text(innerDocument['month'].toString()),
-            subtitle: Text(innerDocument['payment'].toString()),
+            title: Text(documentsnapshot.data['month'].toString()),
+            subtitle: Text(documentsnapshot.data['status'].toString()),
           ));
         }).toList();
-      }
+      });
     }).toList();
 
     return innerList;
