@@ -21,16 +21,16 @@ class _HomeAppbarState extends State<HomeAppbar> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      elevation: 0.0,
-      actions: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: IconButton(icon: Icon(Icons.exit_to_app), onPressed: _exitApp),
-        )
-      ],
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0.0,
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: IconButton(
+                icon: Icon(Icons.exit_to_app), onPressed: _exitApp),
+          )
+        ],
+      );
 }

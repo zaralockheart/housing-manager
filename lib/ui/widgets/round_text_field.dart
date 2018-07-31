@@ -23,21 +23,20 @@ class RoundTextField extends StatefulWidget {
 
 class _RoundTextFieldState extends State<RoundTextField> {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            color: Color.fromRGBO(255, 255, 255, 0.5)),
-        child: TextFormField(
-          keyboardType: widget.keyboardType,
-          obscureText: widget.obscureText,
-          validator: widget.validator,
-          controller: widget.controller,
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: widget.hint,
-          ),
-        ));
-  }
+  Widget build(BuildContext context) =>
+      Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              color: Color.fromRGBO(255, 255, 255, 0.5)),
+          child: TextFormField(
+            keyboardType: widget.keyboardType,
+            obscureText: widget.obscureText,
+            validator: widget.validator,
+            controller: widget.controller,
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: widget.hint,
+            ),
+          ));
 }

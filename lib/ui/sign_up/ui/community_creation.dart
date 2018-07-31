@@ -23,14 +23,14 @@ class CommunityCreation extends StatefulWidget {
 
 class _CommunityCreationState extends State<CommunityCreation> {
   TextEditingController communityTextController = TextEditingController();
-  var emailLists = Map<int, String>();
+  var emailLists = <int, String>{};
 
   _createUser(context) async {
-    Firestore.instance.runTransaction((Transaction transaction) {
+    await Firestore.instance.runTransaction((Transaction transaction) {
       _getReference().getDocuments().then((QuerySnapshot querySnapshot) {
-        var errorMessage = "User is already exist in the community";
+        var errorMessage = 'User is already exist in the community';
 
-        if (widget.isCreating && querySnapshot.documents.length != 0) {
+        if (widget.isCreating && querySnapshot.documents.isNotEmpty) {
           if (emailLists.containsValue(widget.email)) {
             _showSnackBar(context, errorMessage);
             return;
@@ -69,15 +69,14 @@ class _CommunityCreationState extends State<CommunityCreation> {
   CollectionReference _getReference() =>
       Firestore.instance.collection(communityTextController.text);
 
-  _createCommunity(collectionRefence) {
-    Future<String> email = FirebaseAuth.instance.currentUser().then((onValue) {
-      return onValue.email;
-    });
+  _createCommunity(collectionReference) {
+    Future<String> email =
+    FirebaseAuth.instance.currentUser().then((onValue) => onValue.email);
 
     email.then((onValue) {
       var signUpModel =
           SignUpModel.toJson(email: onValue, adminStatus: widget.isCreating);
-      collectionRefence.add(signUpModel);
+      collectionReference.add(signUpModel);
 
       _navigateToHome();
     });
@@ -94,53 +93,58 @@ class _CommunityCreationState extends State<CommunityCreation> {
                 )));
   }
 
-  textInput() {
-    return Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            color: Color.fromRGBO(255, 255, 255, 0.5)),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 20.0),
-          child: new TextFormField(
-              controller: communityTextController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: new InputDecoration(
-                labelStyle: TextStyle(color: Colors.white),
-                labelText: S.of(context).communityHint,
-              )),
-        ));
-  }
+  textInput() =>
+      Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              color: Color.fromRGBO(255, 255, 255, 0.5)),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 20.0),
+            child: new TextFormField(
+                controller: communityTextController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: new InputDecoration(
+                  labelStyle: TextStyle(color: Colors.white),
+                  labelText: S
+                      .of(context)
+                      .communityHint,
+                )),
+          ));
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              image: new AssetImage("res/images/background.jpeg"),
-              fit: BoxFit.cover,
+  Widget build(BuildContext context) =>
+      Scaffold(
+        body: Container(
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: new AssetImage('res/images/background.jpeg'),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          child: Builder(
-              builder: (BuildContext context) => Padding(
-                    padding: EdgeInsets.all(18.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        textInput(),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 50.0),
-                            child: RoundedFlatButtonField(
-                                borderSide: BorderSide(color: Colors.white),
-                                hasBackgroundColor: false,
-                                buttonText: widget.isCreating
-                                    ? S.of(context).createCommunity
-                                    : S.of(context).joinCommunity,
-                                onPress: () => _createUser(context))),
-                      ],
-                    ),
-                  ))),
-    );
-  }
+            child: Builder(
+                builder: (BuildContext context) =>
+                    Padding(
+                      padding: EdgeInsets.all(18.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          textInput(),
+                          Padding(
+                              padding: const EdgeInsets.only(top: 50.0),
+                              child: RoundedFlatButtonField(
+                                  borderSide: BorderSide(color: Colors.white),
+                                  hasBackgroundColor: false,
+                                  buttonText: widget.isCreating
+                                      ? S
+                                      .of(context)
+                                      .createCommunity
+                                      : S
+                                      .of(context)
+                                      .joinCommunity,
+                                  onPress: () => _createUser(context))),
+                        ],
+                      ),
+                    ))),
+      );
 }

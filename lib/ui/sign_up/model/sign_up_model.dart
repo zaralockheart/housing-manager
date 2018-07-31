@@ -4,7 +4,6 @@ class SignUpModel {
 
   SignUpModel({this.email, this.adminStatus});
 
-  static Map<String, dynamic> toJson({email, adminStatus}) {
-    return {"email": email, "adminStatus": adminStatus};
-  }
+  static Map<String, dynamic> toJson({email, adminStatus}) =>
+      {'email': email, 'adminStatus': adminStatus};
 }

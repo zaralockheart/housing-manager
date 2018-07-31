@@ -22,17 +22,16 @@ class RoundedFlatButtonField extends StatefulWidget {
 
 class _RoundedFlatButtonFieldState extends State<RoundedFlatButtonField> {
   @override
-  Widget build(BuildContext context) {
-    return FlatButton(
-      shape: RoundedRectangleBorder(
-          side: widget.borderSide ?? BorderSide(color: Colors.transparent),
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
-      onPressed: widget.onPress,
-      textColor: Colors.white,
-      color: widget.hasBackgroundColor
-          ? widget.backgroundColor
-          : Colors.transparent,
-      child: Text(widget.buttonText),
-    );
-  }
+  Widget build(BuildContext context) =>
+      FlatButton(
+        shape: RoundedRectangleBorder(
+            side: widget.borderSide ?? BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        onPressed: widget.onPress,
+        textColor: Colors.white,
+        color: widget.hasBackgroundColor
+            ? widget.backgroundColor
+            : Colors.transparent,
+        child: Text(widget.buttonText),
+      );
 }

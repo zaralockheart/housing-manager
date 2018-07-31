@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         localizationsDelegates: [S.delegate],
         supportedLocales: S.delegate.supportedLocales,
         localeResolutionCallback:
-            S.delegate.resolution(fallback: new Locale("en", "")),
+        S.delegate.resolution(fallback: new Locale('en', '')),
         title: appConfig.appName,
         theme: ThemeData(
           primaryColor: Colors.white,
@@ -70,12 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
             if (!snapshot.hasData) return Text('Loading...');
             return ListView(
               children:
-                  snapshot.data.documents.map((DocumentSnapshot document) {
-                return ListTile(
+              snapshot.data.documents.map((DocumentSnapshot document) =>
+                  ListTile(
                   title: Text(document['name']),
-                  subtitle: Text(document['votes'].toString()),
-                );
-              }).toList(),
+                    subtitle: Text(document['votes'].toString()),
+                  )).toList(),
             );
           },
         ),

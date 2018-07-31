@@ -15,15 +15,15 @@ class _SignUpState extends State<SignUp> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   _signUpUser({BuildContext context, bool isCreating}) {
-    String errorMessage = "";
+    String errorMessage = '';
     if (passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty ||
         emailController.text.isEmpty) {
-      errorMessage = "Please will in all the details";
+      errorMessage = 'Please will in all the details';
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      errorMessage = "Password not same";
+      errorMessage = 'Password not same';
     }
     final snackBar = SnackBar(content: Text(errorMessage));
 
@@ -80,7 +80,7 @@ class _SignUpState extends State<SignUp> {
   mainContainer(BuildContext context) => Container(
       decoration: new BoxDecoration(
         image: new DecorationImage(
-          image: new AssetImage("res/images/wood.jpeg"),
+          image: new AssetImage('res/images/wood.jpeg'),
           fit: BoxFit.cover,
         ),
       ),
@@ -117,9 +117,8 @@ class _SignUpState extends State<SignUp> {
       ));
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body:
-            Builder(builder: (BuildContext context) => mainContainer(context)));
-  }
+  Widget build(BuildContext context) =>
+      Scaffold(
+          body:
+          Builder(builder: mainContainer));
 }

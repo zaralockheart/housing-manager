@@ -33,7 +33,7 @@ class _SignInState extends State<SignIn> {
                     email: emailController.text)),
       );
     }).catchError((onError) {
-      print("onError sign in $onError");
+      print('onError sign in $onError');
     });
   }
 
@@ -56,75 +56,74 @@ class _SignInState extends State<SignIn> {
 
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: new Container(
-        decoration: new BoxDecoration(
-          image: new DecorationImage(
-            image: new AssetImage("res/images/background.jpeg"),
-            fit: BoxFit.cover,
+  Widget build(BuildContext context) =>
+      Scaffold(
+        body: new Container(
+          decoration: new BoxDecoration(
+            image: new DecorationImage(
+              image: new AssetImage('res/images/background.jpeg'),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Stack(
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Container(),
-                  ),
-                  _signInEditText(
-                      controller: emailController,
-                      hint: S
-                          .of(context)
-                          .emailHint,
-                      obscureText: false),
-                  _signInEditText(
-                      controller: passwordController,
-                      hint: S
-                          .of(context)
-                          .passwordHint,
-                      obscureText: true),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: RoundedFlatButtonField(
-                        borderSide: BorderSide(color: Colors.black),
-                        buttonText: S
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(),
+                    ),
+                    _signInEditText(
+                        controller: emailController,
+                        hint: S
                             .of(context)
-                            .signIn,
-                        onPress: _onSignIn),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(bottom: 50.0),
+                            .emailHint,
+                        obscureText: false),
+                    _signInEditText(
+                        controller: passwordController,
+                        hint: S
+                            .of(context)
+                            .passwordHint,
+                        obscureText: true),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
                       child: RoundedFlatButtonField(
-                        borderSide: BorderSide(color: Colors.white),
-                        hasBackgroundColor: false,
-                        buttonText: S
-                            .of(context)
-                            .signUp,
-                        onPress: _onPressSignUp,
-                      )),
-                ],
-              )
-            ],
+                          borderSide: BorderSide(color: Colors.black),
+                          buttonText: S
+                              .of(context)
+                              .signIn,
+                          onPress: _onSignIn),
+                    ),
+                    Expanded(
+                      child: Container(),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(bottom: 50.0),
+                        child: RoundedFlatButtonField(
+                          borderSide: BorderSide(color: Colors.white),
+                          hasBackgroundColor: false,
+                          buttonText: S
+                              .of(context)
+                              .signUp,
+                          onPress: _onPressSignUp,
+                        )),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
