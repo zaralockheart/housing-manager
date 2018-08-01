@@ -17,12 +17,8 @@ class HomePresenter {
           if (!futureSnapshot.hasData) return Text('Loading...');
           futureSnapshot.data.documents.map((DocumentSnapshot snapshot) {
             for (int i = 0; i < snapshot['paymentStatus'].length; i++) {
-              if (i > 0 &&
-                  snapshot['paymentStatus'][i]['status'] !=
-                      snapshot['paymentStatus'][i - 1]['status']) {
-                homeView.onGetLastPayment(
-                    snapshot['paymentStatus'][i - 1]['month'].toString());
-              }
+              _getLastPayment(i, snapshot);
+
               innerList.add(ListTile(
                 title: Text(snapshot['paymentStatus'][i]['month'].toString()),
                 subtitle:
@@ -33,6 +29,15 @@ class HomePresenter {
           return ListView(children: innerList);
         },
       );
+
+  _getLastPayment(i, snapshot) {
+    if (i > 0 &&
+        snapshot['paymentStatus'][i]['status'] !=
+            snapshot['paymentStatus'][i - 1]['status']) {
+      homeView.onGetLastPayment(
+          snapshot['paymentStatus'][i - 1]['month'].toString());
+    }
+  }
 
   checkIfPaymentListExist(docId) {
     var paymentCollection =
