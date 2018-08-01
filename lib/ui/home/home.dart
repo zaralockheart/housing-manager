@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housing_manager/ui/home/home_appbar.dart';
 import 'package:housing_manager/ui/home/model/payment_status_model.dart';
@@ -16,47 +17,53 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var lastPayment = '';
 
-
-  List<Widget> _listBuilder(AsyncSnapshot<QuerySnapshot> snapshot) {
-    List<Widget> innerList = <Widget>[];
-    snapshot.data.documents.map((DocumentSnapshot document) async {
-      var docId = '';
-
-      await Firestore.instance.runTransaction((Transaction transaction) async {
-        await Firestore.instance
-            .collection('suakasih')
+  Widget homeMainStreamBuilder() =>
+      StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance
+            .collection(widget.community)
             .where('email', isEqualTo: widget.currentUserEmail)
-            .snapshots()
-            .map((QuerySnapshot snapshot) {
-          snapshot.documents.map((DocumentSnapshot snapshot) async {
-            docId = snapshot.documentID;
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) return Text('Loading...');
+
+          var docId = snapshot.data.documents[0].documentID;
+          var payments =
+          Firestore.instance.collection('suakasih/$docId/${DateTime
+              .now()
+              .year}');
+
+          _checkIfPaymentListExist(docId);
+
+          return paymentStatusBuilder(payments);
+        },
+      );
+
+  Widget paymentStatusBuilder(CollectionReference payments) =>
+      StreamBuilder(
+        stream: payments.snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot> futureSnapshot) {
+          List<Widget> innerList = <Widget>[];
+          if (!futureSnapshot.hasData) return Text('Loading...');
+          futureSnapshot.data.documents.map((DocumentSnapshot snapshot) {
+            for (int i = 0; i < snapshot['paymentStatus'].length; i++) {
+              if (i > 0 &&
+                  snapshot['paymentStatus'][i]['status'] !=
+                      snapshot['paymentStatus'][i - 1]['status']) {
+                lastPayment = snapshot['paymentStatus'][i - 1]['month'];
+              }
+              innerList.add(ListTile(
+                title: Text(snapshot['paymentStatus'][i]['month'].toString()),
+                subtitle:
+                Text(snapshot['paymentStatus'][i]['status'].toString()),
+              ));
+            }
           }).toList();
-        }).toList();
-      }).then((onValue) async {
-        _checkIfPaymentListExist(docId);
-      }).whenComplete(() {
-        print('Completed!');
-        return;
-      });
-
-      var payments = Firestore.instance.collection('suakasih/$docId/${DateTime
-          .now()
-          .year}');
-
-      await payments.getDocuments().then((QuerySnapshot querysnapshot) {
-        querysnapshot.documents.map((DocumentSnapshot documentsnapshot) {
-          print(documentsnapshot.data['paymentStatus']);
-          innerList.add(ListTile(
-            title: Text(documentsnapshot.data['month'].toString()),
-            subtitle: Text(documentsnapshot.data['status'].toString()),
-          ));
-        }).toList();
-      });
-    }).toList();
-
-    return innerList;
-  }
+          return ListView(children: innerList);
+        },
+      );
 
   _checkIfPaymentListExist(docId) {
     var paymentCollection =
@@ -79,26 +86,54 @@ class _HomeState extends State<Home> {
     }).toList();
   }
 
+  _getAll(docId) {
+    var yearDif = DateTime
+        .now()
+        .year - 2017;
+
+    var yearAndMonths = [];
+    for (int i = 0; i < yearDif + 1; i++) {
+      var test = Firestore.instance.collection('suakasih/$docId/${2017 + i}');
+
+      test.getDocuments().then((QuerySnapshot value) {
+        for (int j = 0; j < value.documents.length; j++) {
+          yearAndMonths.add({
+            'year': 2017 + i,
+            'payments': value.documents[j]['paymentStatus']
+          });
+        }
+      }).then(((onValue) {
+        print(yearAndMonths);
+      }));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) =>
       Scaffold(
-        appBar: HomeAppbar(),
-        body: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Center(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: Firestore.instance
-                  .collection(widget.community)
-                  .where('email', isEqualTo: 'test@test.test')
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) return Text('Loading...');
-
-                return ListView(children: _listBuilder(snapshot));
-              },
-            ),
-          ),
-        ),
-      );
+          appBar: HomeAppbar(),
+          body: FutureBuilder(
+              future: FirebaseAuth.instance.currentUser(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return Text('');
+                return Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Hi ${snapshot.data.displayName}'),
+                        Text(lastPayment.toUpperCase()),
+                        Expanded(
+                          child: homeMainStreamBuilder(),
+                        ),
+                      ],
+                    ));
+              }));
 }

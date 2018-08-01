@@ -38,7 +38,9 @@ class _SignUpState extends State<SignUp> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => CommunityCreation(isCreating: isCreating)),
+              builder: (context) =>
+                  CommunityCreation(
+                      isCreating: isCreating, email: emailController.text)),
         );
       }).catchError((onError) {
         Scaffold
@@ -77,7 +79,8 @@ class _SignUpState extends State<SignUp> {
         ));
   }
 
-  mainContainer(BuildContext context) => Container(
+  Widget mainContainer(BuildContext context) =>
+      Container(
       decoration: new BoxDecoration(
         image: new DecorationImage(
           image: new AssetImage('res/images/wood.jpeg'),
