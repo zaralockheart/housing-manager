@@ -1,11 +1,8 @@
-import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:housing_manager/ui/home/home_appbar.dart';
-import 'package:housing_manager/ui/home/home_presenter.dart';
-import 'package:housing_manager/ui/home/home_view.dart';
+import 'package:housing_manager/ui/home/home_payment_list.dart';
+import 'package:housing_manager/ui/home/home_user_details.dart';
+import 'package:housing_manager/ui/home/widget/home_appbar.dart';
 
 class Home extends StatefulWidget {
   final currentUserEmail;
@@ -18,58 +15,9 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> implements HomeView {
+class _HomeState extends State<Home> {
   var lastPaymentString = '';
   final controller = new PageController();
-
-  HomePresenter presenter;
-
-  @override
-  void initState() {
-    super.initState();
-    presenter = HomePresenter(this);
-  }
-
-  @override
-  onGetLastPayment(month) {
-    Timer(Duration(milliseconds: 50), () {
-      setState(() {
-        lastPaymentString = month;
-      });
-    });
-  }
-
-  _myColumn(snapshot) =>
-      Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text('Hi ${snapshot.data.displayName}'),
-          Text(lastPaymentString.toUpperCase()),
-        ],
-      );
-
-  _paymentList() =>
-      StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance
-            .collection(widget.community)
-            .where('email', isEqualTo: widget.currentUserEmail)
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) return Text('Loading...');
-
-          var docId = snapshot.data.documents[0].documentID;
-          var payments =
-          Firestore.instance.collection('suakasih/$docId/${DateTime
-              .now()
-              .year}');
-
-          presenter.checkIfPaymentListExist(docId);
-
-          return presenter.paymentStatusBuilder(payments);
-        },
-      );
 
   @override
   Widget build(BuildContext context) =>
@@ -105,21 +53,16 @@ class _HomeState extends State<Home> implements HomeView {
                     ),
                     body: TabBarView(
                       children: [
-                        _myColumn(snapshot),
-                        _paymentList(),
+                        HomeUserDetails(
+                            lastPaymentString: lastPaymentString,
+                            snapshot: snapshot),
+                        HomePaymentList(
+                          currentUserEmail: widget.currentUserEmail,
+                          community: widget.community,
+                        ),
                       ],
                     ),
                   ),
                 );
-//                child: PageView.builder(
-//                  controller: controller,
-//                  itemCount: 2,
-//                  itemBuilder: (_, i) {
-//                    List<Widget> mList = <Widget>[];
-//                    mList.add(_myColumn(snapshot));
-//                    mList.add(_paymentList());
-//                    return mList[i];
-//                  },
-//                ));
               }));
 }
