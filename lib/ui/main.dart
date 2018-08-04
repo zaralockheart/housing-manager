@@ -50,13 +50,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  MainBloc counterBloc;
+
   void _incrementCounter({MainBloc bloc}) {
 //    bloc.itemCount2.add(1);
   }
 
   @override
   Widget build(BuildContext context) {
-    final MainBloc counterBloc = MainProvider.of(context);
+    counterBloc = MainProvider.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children:
               snapshot.data.documents.map((DocumentSnapshot document) =>
                   ListTile(
-                  title: Text(document['name']),
+                    title: Text(document['name']),
                     subtitle: Text(document['votes'].toString()),
                   )).toList(),
             );

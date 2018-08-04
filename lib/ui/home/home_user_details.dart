@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:housing_manager/ui/home/bloc/home_bloc.dart';
+import 'package:housing_manager/bloc/main_bloc.dart';
+import 'package:housing_manager/bloc/main_provider.dart';
 
 class HomeUserDetails extends StatefulWidget {
   final snapshot;
@@ -13,14 +14,39 @@ class HomeUserDetails extends StatefulWidget {
 }
 
 class _HomeUserDetailsState extends State<HomeUserDetails> {
+  MainBloc mainBloc;
+
   @override
-  Widget build(BuildContext context) => Column(
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    mainBloc = MainProvider.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Hi ${widget.snapshot.data.displayName}'),
-          Text(HomeBloc.lastPaymentMonth.toUpperCase()),
+          Text('Hi ${widget.snapshot.data.displayName}',
+              style: TextStyle(fontSize: 20.0)),
+          Text(
+            'Your last payment is at',
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          ),
+          StreamBuilder(
+            stream: mainBloc.homeBloc.lastPaymentMonthStream,
+            builder: (BuildContext context, AsyncSnapshot snapshot) =>
+                Text(
+                    snapshot.data,
+                    style: TextStyle(
+                        fontSize: 40.0, fontWeight: FontWeight.bold)),
+          )
         ],
-      );
+      ),
+    );
+  }
 }

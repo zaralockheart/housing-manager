@@ -3,17 +3,39 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
 class HomeBloc {
-  static var lastPaymentMonth = '';
+  var lastPaymentMonth = '';
 
-  static Sink<String> get lastPaymentMonthSink =>
-      lastPaymentMonthController.sink;
-  static final lastPaymentMonthController = StreamController<String>();
+  Sink<String> get lastPaymentMonthSink => _lastPaymentMonthController.sink;
+  final _lastPaymentMonthController = StreamController<String>();
 
-//    static Stream<String> get lastPaymentMonthStream => lastPaymentMonthSubject.stream;
-  static final lastPaymentMonthSubject = BehaviorSubject<String>();
+  Stream<String> get lastPaymentMonthStream => _lastPaymentMonthSubject.stream;
+  final _lastPaymentMonthSubject = BehaviorSubject<String>();
 
-  static setLastPayment(String lastPaymentMonths) {
-    lastPaymentMonth = lastPaymentMonths;
-    lastPaymentMonthSubject.add(lastPaymentMonth);
+  var paymentLists = [];
+
+  Sink<dynamic> get paymentListsSink => _paymentListsController.sink;
+  final _paymentListsController = StreamController<dynamic>();
+
+  Stream<dynamic> get paymentListsStream => _paymentListsSubject.stream;
+  final _paymentListsSubject = BehaviorSubject<dynamic>();
+
+  HomeBloc() {
+    _lastPaymentMonthController.stream.listen(setLastPayment);
+    _paymentListsController.stream.listen(setPaymentList);
+  }
+
+  setLastPayment(String lastPayment) {
+    lastPaymentMonth = lastPayment;
+    _lastPaymentMonthSubject.add(lastPaymentMonth);
+  }
+
+  setPaymentList(paymentList) {
+    paymentLists = paymentList;
+    _paymentListsSubject.add(paymentLists);
+  }
+
+  dispose() {
+    _paymentListsController.close();
+    _lastPaymentMonthController.close();
   }
 }

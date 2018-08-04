@@ -41,42 +41,66 @@ class HomePresenter {
 
   checkIfPaymentListExist(docId) {
     var paymentCollection =
-        Firestore.instance.collection('suakasih/$docId/${DateTime
-        .now()
-        .year}');
+    Firestore.instance.collection('suakasih/$docId/payments');
 
     paymentCollection.snapshots().map((QuerySnapshot querySnapshot) {
       if (querySnapshot.documents.isNotEmpty) {
-        print("Don't add this year");
+        if (querySnapshot.documents[querySnapshot.documents.length - 1]
+        ['year'] !=
+            DateTime
+                .now()
+                .year + 1) {
+          _addNextYear(paymentCollection, querySnapshot);
+        }
       } else {
-        List<Map<String, dynamic>> yearInit = <Map<String, dynamic>>[];
-
-        monthsInAYear.map((String month) {
-          yearInit.add(PaymentStatusModel.toJson(month: month, status: false));
-        }).toList();
-
-        paymentCollection.add({'paymentStatus': yearInit});
+        _addValueFrom2017(paymentCollection);
       }
     }).toList();
   }
 
-  _getAll(docId) {
+  _addValueFrom2017(paymentCollection) {
+    var yearDif = DateTime
+        .now()
+        .year - 2017;
+
+    for (int i = 0; i < yearDif + 1; i++) {
+      monthsInAYear.map((String month) {
+        paymentCollection.add(PaymentStatusModel.toJson(
+            month: month, status: false, year: 2017 + i));
+      }).toList();
+    }
+  }
+
+  _addNextYear(paymentCollection, querySnapshot) {
+    var docLength = querySnapshot.documents.length - 1;
+    if (querySnapshot.documents[docLength]['year'] != DateTime
+        .now()
+        .year + 1) {
+      monthsInAYear.map((String month) {
+        paymentCollection.add(
+            PaymentStatusModel.toJson(month: month, status: false, year: 2019));
+      }).toList();
+    }
+  }
+
+  getAllPayments({docId}) {
     var yearDif = DateTime.now().year - 2017;
 
     var yearAndMonths = [];
     for (int i = 0; i < yearDif + 1; i++) {
-      var test = Firestore.instance.collection('suakasih/$docId/${2017 + i}');
-
-      test.getDocuments().then((QuerySnapshot value) {
-        for (int j = 0; j < value.documents.length; j++) {
-          yearAndMonths.add({
-            'year': 2017 + i,
-            'payments': value.documents[j]['paymentStatus']
-          });
+      var collectionPerYear =
+      Firestore.instance.collection('suakasih/$docId/payments');
+      collectionPerYear.snapshots().map((QuerySnapshot querySnapshot) {
+        var documents = querySnapshot.documents;
+        for (int i = 0; i < documents.length; i++) {
+          if (i > 0 && documents[i]['status'] != documents[i - 1]['status']) {
+            homeView.onGetLastPayment(
+                "${documents[i - 1]['month']} ${documents[i - 1]['year']}");
+          }
+          yearAndMonths.add(documents[i]);
         }
-      }).then(((onValue) {
-        print(yearAndMonths);
-      }));
+        homeView.onGetAllData(datas: yearAndMonths);
+      }).toList();
     }
   }
 }
