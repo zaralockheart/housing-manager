@@ -39,9 +39,9 @@ class HomePresenter {
     }
   }
 
-  checkIfPaymentListExist(docId) {
+  checkIfPaymentListExist(community, docId) {
     var paymentCollection =
-    Firestore.instance.collection('suakasih/$docId/payments');
+    Firestore.instance.collection('$community}/$docId/payments');
 
     paymentCollection.snapshots().map((QuerySnapshot querySnapshot) {
       if (querySnapshot.documents.isNotEmpty) {
@@ -83,10 +83,10 @@ class HomePresenter {
     }
   }
 
-  getAllPayments({docId}) {
+  getAllPayments({community, docId}) {
     var yearAndMonths = [];
     var collectionPerYear =
-    Firestore.instance.collection('suakasih/$docId/payments');
+    Firestore.instance.collection('$community/$docId/payments');
     collectionPerYear.snapshots().map((QuerySnapshot querySnapshot) {
       var documents = querySnapshot.documents;
       for (int i = 0; i < documents.length; i++) {

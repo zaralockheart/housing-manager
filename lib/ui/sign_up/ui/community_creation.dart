@@ -7,6 +7,8 @@ import 'package:housing_manager/generated/i18n.dart';
 import 'package:housing_manager/ui/home/home.dart';
 import 'package:housing_manager/ui/sign_up/model/sign_up_model.dart';
 import 'package:housing_manager/ui/widgets/rounded_flat_button.dart';
+import 'package:housing_manager/util/view_util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CommunityCreation extends StatefulWidget {
   final bool isCreating;
@@ -32,14 +34,14 @@ class _CommunityCreationState extends State<CommunityCreation> {
 
         if (widget.isCreating && querySnapshot.documents.isNotEmpty) {
           if (emailLists.containsValue(widget.email)) {
-            _showSnackBar(context, errorMessage);
+            showSnackBar(context, errorMessage);
             return;
           }
 
           for (int i = 0; i < querySnapshot.documents.length; i++) {
             if (querySnapshot.documents[i]['email'] == widget.email) {
               emailLists[i] = widget.email;
-              _showSnackBar(context, errorMessage);
+              showSnackBar(context, errorMessage);
             } else {
               _createCommunity(_getReference());
             }
@@ -49,7 +51,13 @@ class _CommunityCreationState extends State<CommunityCreation> {
             _getReference().snapshots().map((QuerySnapshot snapshot) {
               snapshot.documents.map((DocumentSnapshot docSnapshot) {
                 if (docSnapshot['email'] == widget.email) {
-                  _navigateToHome();
+                  SharedPreferences
+                      .getInstance()
+                      .then((SharedPreferences sharedPreference) {
+                    sharedPreference.setStringList(
+                        'community', [communityTextController.text]);
+                    _navigateToHome();
+                  });
                 }
               }).toList();
             }).toList();
@@ -59,11 +67,6 @@ class _CommunityCreationState extends State<CommunityCreation> {
         }
       });
     });
-  }
-
-  _showSnackBar(context, errorMessage) {
-    final snackBar = SnackBar(content: Text(errorMessage));
-    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   CollectionReference _getReference() =>

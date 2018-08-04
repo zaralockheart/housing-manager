@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housing_manager/ui/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeAppbar extends StatefulWidget implements PreferredSizeWidget {
   @override
@@ -13,11 +14,16 @@ class HomeAppbar extends StatefulWidget implements PreferredSizeWidget {
 
 class _HomeAppbarState extends State<HomeAppbar> {
   _exitApp() {
-    FirebaseAuth.instance.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => MyApp()),
-    );
+    SharedPreferences.getInstance().then((SharedPreferences sharedPreferences) {
+      sharedPreferences.remove('comunity');
+      sharedPreferences.clear();
+    }).then((onValue) {
+      FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyApp()),
+      );
+    });
   }
 
   @override
@@ -28,8 +34,8 @@ class _HomeAppbarState extends State<HomeAppbar> {
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: IconButton(
-                icon: Icon(Icons.exit_to_app), onPressed: _exitApp),
+            child:
+            IconButton(icon: Icon(Icons.exit_to_app), onPressed: _exitApp),
           )
         ],
       );

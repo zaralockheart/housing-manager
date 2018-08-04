@@ -48,7 +48,7 @@ class _HomeState extends State<Home> implements HomeView {
     return Container(
       child: StreamBuilder(
           stream: Firestore.instance
-              .collection('suakasih')
+              .collection(widget.community)
               .where('email', isEqualTo: widget.currentUserEmail)
               .snapshots(),
           builder:
@@ -56,18 +56,20 @@ class _HomeState extends State<Home> implements HomeView {
             if (!snapshots.hasData) return Text('Loading!!!');
 
             var docId = snapshots.data.documents[0].documentID;
-            presenter.checkIfPaymentListExist(docId);
-            presenter.getAllPayments(docId: docId);
+            presenter.checkIfPaymentListExist(docId, widget.community);
+            presenter.getAllPayments(docId: docId, community: widget.community);
             var isAdmin = snapshots.data.documents[0]['adminStatus'];
 
             return Scaffold(
                 floatingActionButton: isAdmin
                     ? FloatingActionButton(
+                  child: Icon(Icons.people),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MembersList()),
+                          builder: (context) =>
+                              MembersList(community: widget.community)),
                     );
                   },
                 )

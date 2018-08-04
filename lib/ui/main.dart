@@ -7,6 +7,8 @@ import 'package:housing_manager/generated/i18n.dart';
 import 'package:housing_manager/settings/AppConfig.dart';
 import 'package:housing_manager/ui/home/home.dart';
 import 'package:housing_manager/ui/sign_in/sign_in.dart';
+import 'package:housing_manager/ui/sign_up/ui/community_creation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -30,9 +32,35 @@ class MyApp extends StatelessWidget {
               if (!snapshot.hasData) {
                 return SignIn(title: appConfig.appName);
               } else {
-                return Home(
-                  currentUserEmail: snapshot.data.email,
-                  community: 'suakasih',);
+                return FutureBuilder(
+                  future: SharedPreferences.getInstance(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<SharedPreferences>
+                      sharedPreferenceSnapshot) {
+                    if (!sharedPreferenceSnapshot.hasData) {
+                      return CommunityCreation(
+                          isCreating: false,
+                          isSigningIn: true,
+                          email: snapshot.data.email);
+                    } else {
+                      var communitySharedPreference = sharedPreferenceSnapshot
+                          .data.get('community');
+                      if (communitySharedPreference == null) {
+                        return CommunityCreation(
+                            isCreating: false,
+                            isSigningIn: true,
+                            email: snapshot.data.email);
+                      } else {
+                        return Home(
+                          currentUserEmail: snapshot.data.email,
+                          community:
+                          sharedPreferenceSnapshot.data.getStringList(
+                              'community')[0],
+                        );
+                      }
+                    }
+                  },
+                );
               }
             }),
       ),
@@ -50,7 +78,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   MainBloc counterBloc;
 
   void _incrementCounter({MainBloc bloc}) {
@@ -72,12 +99,13 @@ class _MyHomePageState extends State<MyHomePage> {
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) return Text('Loading...');
             return ListView(
-              children:
-              snapshot.data.documents.map((DocumentSnapshot document) =>
+              children: snapshot.data.documents
+                  .map((DocumentSnapshot document) =>
                   ListTile(
                     title: Text(document['name']),
                     subtitle: Text(document['votes'].toString()),
-                  )).toList(),
+                  ))
+                  .toList(),
             );
           },
         ),
