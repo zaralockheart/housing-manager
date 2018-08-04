@@ -3,11 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housing_manager/bloc/main_bloc.dart';
 import 'package:housing_manager/bloc/main_provider.dart';
-import 'package:housing_manager/ui/home/home_payment_list.dart';
 import 'package:housing_manager/ui/home/home_presenter.dart';
-import 'package:housing_manager/ui/home/home_user_details.dart';
 import 'package:housing_manager/ui/home/home_view.dart';
+import 'package:housing_manager/ui/home/tabs/home_payment_list.dart';
+import 'package:housing_manager/ui/home/tabs/home_user_details.dart';
 import 'package:housing_manager/ui/home/widget/home_appbar.dart';
+import 'package:housing_manager/ui/members/members_list.dart';
 
 class Home extends StatefulWidget {
   final currentUserEmail;
@@ -44,60 +45,70 @@ class _HomeState extends State<Home> implements HomeView {
   @override
   Widget build(BuildContext context) {
     mainBloc = MainProvider.of(context);
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {});
-          },
-        ),
-        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-        appBar: HomeAppbar(),
-        body: FutureBuilder(
-            future: FirebaseAuth.instance.currentUser(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return Text('');
-              return DefaultTabController(
-                length: 3,
-                child: Scaffold(
-                  appBar: AppBar(
-                    elevation: 0.0,
-                    actions: <Widget>[],
-                    title: TabBar(
-                      indicator: UnderlineTabIndicator(
-                          borderSide: BorderSide(
-                              color: Colors.black,
-                              style: BorderStyle.solid,
-                              width: 2.5)),
-                      unselectedLabelColor: Colors.grey,
-                      tabs: [
-                        Tab(icon: Icon(Icons.person)),
-                        Tab(icon: Icon(Icons.details)),
-                      ],
-                      indicatorColor: Colors.white,
-                    ),
-                  ),
-                  body: StreamBuilder(
-                      stream: Firestore.instance
-                          .collection('suakasih')
-                          .where('email', isEqualTo: widget.currentUserEmail)
-                          .snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshots) {
-                        if (!snapshots.hasData) return Text('Please wait');
+    return Container(
+      child: StreamBuilder(
+          stream: Firestore.instance
+              .collection('suakasih')
+              .where('email', isEqualTo: widget.currentUserEmail)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshots) {
+            if (!snapshots.hasData) return Text('Loading!!!');
 
-                        var docId = snapshots.data.documents[0].documentID;
-                        presenter.checkIfPaymentListExist(docId);
-                        presenter.getAllPayments(docId: docId);
+            var docId = snapshots.data.documents[0].documentID;
+            presenter.checkIfPaymentListExist(docId);
+            presenter.getAllPayments(docId: docId);
+            var isAdmin = snapshots.data.documents[0]['adminStatus'];
 
-                        return TabBarView(
-                          children: [
-                            HomeUserDetails(snapshot: snapshot),
-                            HomePaymentList(),
-                          ],
-                        );
-                      }),
-                ),
-              );
-            }));
+            return Scaffold(
+                floatingActionButton: isAdmin
+                    ? FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MembersList()),
+                    );
+                  },
+                )
+                    : null,
+                floatingActionButtonAnimator:
+                FloatingActionButtonAnimator.scaling,
+                appBar: HomeAppbar(),
+                body: FutureBuilder(
+                    future: FirebaseAuth.instance.currentUser(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return Text('');
+                      return DefaultTabController(
+                        length: 3,
+                        child: Scaffold(
+                          appBar: AppBar(
+                            elevation: 0.0,
+                            actions: <Widget>[],
+                            title: TabBar(
+                              indicator: UnderlineTabIndicator(
+                                  borderSide: BorderSide(
+                                      color: Colors.black,
+                                      style: BorderStyle.solid,
+                                      width: 2.5)),
+                              unselectedLabelColor: Colors.grey,
+                              tabs: [
+                                Tab(icon: Icon(Icons.person)),
+                                Tab(icon: Icon(Icons.details)),
+                              ],
+                              indicatorColor: Colors.white,
+                            ),
+                          ),
+                          body: TabBarView(
+                            children: [
+                              HomeUserDetails(snapshot: snapshot),
+                              HomePaymentList(),
+                            ],
+                          ),
+                        ),
+                      );
+                    }));
+          }),
+    );
   }
 }

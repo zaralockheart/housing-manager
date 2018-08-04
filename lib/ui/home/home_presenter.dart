@@ -84,23 +84,19 @@ class HomePresenter {
   }
 
   getAllPayments({docId}) {
-    var yearDif = DateTime.now().year - 2017;
-
     var yearAndMonths = [];
-    for (int i = 0; i < yearDif + 1; i++) {
-      var collectionPerYear =
-      Firestore.instance.collection('suakasih/$docId/payments');
-      collectionPerYear.snapshots().map((QuerySnapshot querySnapshot) {
-        var documents = querySnapshot.documents;
-        for (int i = 0; i < documents.length; i++) {
-          if (i > 0 && documents[i]['status'] != documents[i - 1]['status']) {
-            homeView.onGetLastPayment(
-                "${documents[i - 1]['month']} ${documents[i - 1]['year']}");
-          }
-          yearAndMonths.add(documents[i]);
+    var collectionPerYear =
+    Firestore.instance.collection('suakasih/$docId/payments');
+    collectionPerYear.snapshots().map((QuerySnapshot querySnapshot) {
+      var documents = querySnapshot.documents;
+      for (int i = 0; i < documents.length; i++) {
+        if (i > 0 && documents[i]['status'] != documents[i - 1]['status']) {
+          homeView.onGetLastPayment(
+              "${documents[i - 1]['month']} ${documents[i - 1]['year']}");
         }
-        homeView.onGetAllData(datas: yearAndMonths);
-      }).toList();
-    }
+        yearAndMonths.add(documents[i]);
+      }
+      homeView.onGetAllData(datas: yearAndMonths);
+    }).toList();
   }
 }

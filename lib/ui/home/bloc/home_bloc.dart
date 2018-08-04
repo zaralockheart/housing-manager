@@ -20,16 +20,16 @@ class HomeBloc {
   final _paymentListsSubject = BehaviorSubject<dynamic>();
 
   HomeBloc() {
-    _lastPaymentMonthController.stream.listen(setLastPayment);
-    _paymentListsController.stream.listen(setPaymentList);
+    _lastPaymentMonthController.stream.listen(_setLastPayment);
+    _paymentListsController.stream.listen(_setPaymentList);
   }
 
-  setLastPayment(String lastPayment) {
+  _setLastPayment(String lastPayment) {
     lastPaymentMonth = lastPayment;
     _lastPaymentMonthSubject.add(lastPaymentMonth);
   }
 
-  setPaymentList(paymentList) {
+  _setPaymentList(paymentList) {
     paymentLists = paymentList;
     _paymentListsSubject.add(paymentLists);
   }

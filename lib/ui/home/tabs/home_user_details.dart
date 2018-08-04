@@ -14,16 +14,9 @@ class HomeUserDetails extends StatefulWidget {
 }
 
 class _HomeUserDetailsState extends State<HomeUserDetails> {
-  MainBloc mainBloc;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    mainBloc = MainProvider.of(context);
+    MainBloc mainBloc = MainProvider.of(context);
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -38,13 +31,13 @@ class _HomeUserDetailsState extends State<HomeUserDetails> {
             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
           ),
           StreamBuilder(
-            stream: mainBloc.homeBloc.lastPaymentMonthStream,
-            builder: (BuildContext context, AsyncSnapshot snapshot) =>
-                Text(
-                    snapshot.data,
-                    style: TextStyle(
-                        fontSize: 40.0, fontWeight: FontWeight.bold)),
-          )
+              stream: mainBloc.homeBloc.lastPaymentMonthStream,
+              builder: (BuildContext context, AsyncSnapshot snapshot) =>
+              snapshot.hasData
+                  ? Text(snapshot.data,
+                  style: TextStyle(
+                      fontSize: 40.0, fontWeight: FontWeight.bold))
+                  : Text('Loading...'))
         ],
       ),
     );
