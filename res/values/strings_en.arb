@@ -6,5 +6,6 @@
   "signUp": "Sign Up",
   "createCommunity": "Create Community!",
   "joinCommunity": "Join Community!",
-  "communityHint": "Please enter your community"
+  "communityHint": "Please enter your community",
+  "noPayment": "No last payment detected, you sure you ever pay?"
 }

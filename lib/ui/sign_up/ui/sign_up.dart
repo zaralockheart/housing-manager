@@ -34,7 +34,6 @@ class _SignUpState extends State<SignUp> {
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((FirebaseUser firebaseUser) {
-
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -121,7 +120,5 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) =>
-      Scaffold(
-          body:
-          Builder(builder: mainContainer));
+      Scaffold(body: Builder(builder: mainContainer));
 }

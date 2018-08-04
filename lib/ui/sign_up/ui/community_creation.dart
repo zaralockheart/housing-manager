@@ -27,6 +27,13 @@ class _CommunityCreationState extends State<CommunityCreation> {
   TextEditingController communityTextController = TextEditingController();
   var emailLists = <int, String>{};
 
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.isSigningIn);
+  }
+
   _createUser(context) async {
     await Firestore.instance.runTransaction((Transaction transaction) {
       _getReference().getDocuments().then((QuerySnapshot querySnapshot) {

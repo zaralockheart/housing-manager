@@ -26,6 +26,8 @@ class S implements WidgetsLocalizations {
   String get createCommunity => "Create Community!";
   String get emailHint => "Please enter your email";
   String get joinCommunity => "Join Community!";
+
+  String get noPayment => "No last payment detected, you sure you ever pay?";
   String get passwordHint => "Please enter your password";
   String get signIn => "Sign In";
   String get signUp => "Sign Up";

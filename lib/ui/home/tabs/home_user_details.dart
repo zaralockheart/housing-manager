@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:housing_manager/bloc/main_bloc.dart';
 import 'package:housing_manager/bloc/main_provider.dart';
+import 'package:housing_manager/generated/i18n.dart';
 
 class HomeUserDetails extends StatefulWidget {
   final snapshot;
@@ -37,7 +38,9 @@ class _HomeUserDetailsState extends State<HomeUserDetails> {
                   ? Text(snapshot.data,
                   style: TextStyle(
                       fontSize: 40.0, fontWeight: FontWeight.bold))
-                  : Text('Loading...'))
+                  : Text(S
+                  .of(context)
+                  .communityHint))
         ],
       ),
     );

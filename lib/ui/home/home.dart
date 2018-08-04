@@ -56,8 +56,10 @@ class _HomeState extends State<Home> implements HomeView {
             if (!snapshots.hasData) return Text('Loading!!!');
 
             var docId = snapshots.data.documents[0].documentID;
-            presenter.checkIfPaymentListExist(docId, widget.community);
-            presenter.getAllPayments(docId: docId, community: widget.community);
+            presenter.checkIfPaymentListExist(
+                docId: docId, community: widget.community);
+            presenter.getAllPayments(
+                context: context, docId: docId, community: widget.community);
             var isAdmin = snapshots.data.documents[0]['adminStatus'];
 
             return Scaffold(

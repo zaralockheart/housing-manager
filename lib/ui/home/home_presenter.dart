@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:housing_manager/generated/i18n.dart';
 import 'package:housing_manager/ui/home/home_view.dart';
 import 'package:housing_manager/ui/home/model/payment_status_model.dart';
 import 'package:housing_manager/util/app_main_config.dart';
@@ -39,62 +40,48 @@ class HomePresenter {
     }
   }
 
-  checkIfPaymentListExist(community, docId) {
+  checkIfPaymentListExist({community, docId}) {
     var paymentCollection =
-    Firestore.instance.collection('$community}/$docId/payments');
+    Firestore.instance.collection('$community/$docId/payments');
 
     paymentCollection.snapshots().map((QuerySnapshot querySnapshot) {
-      if (querySnapshot.documents.isNotEmpty) {
-        if (querySnapshot.documents[querySnapshot.documents.length - 1]
-        ['year'] !=
-            DateTime
-                .now()
-                .year + 1) {
-          _addNextYear(paymentCollection, querySnapshot);
-        }
-      } else {
-        _addValueFrom2017(paymentCollection);
+      if (querySnapshot.documents.isEmpty) {
+        _addThisYearPayments(paymentCollection);
       }
     }).toList();
   }
 
-  _addValueFrom2017(paymentCollection) {
-    var yearDif = DateTime
-        .now()
-        .year - 2017;
-
-    for (int i = 0; i < yearDif + 1; i++) {
-      monthsInAYear.map((String month) {
-        paymentCollection.add(PaymentStatusModel.toJson(
-            month: month, status: false, year: 2017 + i));
-      }).toList();
-    }
+  _addThisYearPayments(paymentCollection) {
+    monthsInAYear.map((String month) {
+      paymentCollection.add(PaymentStatusModel.toJson(
+          month: month, status: false, year: DateTime
+          .now()
+          .year));
+    }).toList();
   }
 
-  _addNextYear(paymentCollection, querySnapshot) {
-    var docLength = querySnapshot.documents.length - 1;
-    if (querySnapshot.documents[docLength]['year'] != DateTime
-        .now()
-        .year + 1) {
-      monthsInAYear.map((String month) {
-        paymentCollection.add(
-            PaymentStatusModel.toJson(month: month, status: false, year: 2019));
-      }).toList();
-    }
-  }
-
-  getAllPayments({community, docId}) {
-    var yearAndMonths = [];
+  getAllPayments({context, community, docId}) {
     var collectionPerYear =
     Firestore.instance.collection('$community/$docId/payments');
     collectionPerYear.snapshots().map((QuerySnapshot querySnapshot) {
       var documents = querySnapshot.documents;
+      var yearAndMonths = [];
+      var lastPayment = '';
       for (int i = 0; i < documents.length; i++) {
-        if (i > 0 && documents[i]['status'] != documents[i - 1]['status']) {
+        if (i > 0 && !documents[i]['status'] && documents[i - 1]['status']) {
+          lastPayment =
+          "${documents[i - 1]['month']} ${documents[i - 1]['year']}";
           homeView.onGetLastPayment(
               "${documents[i - 1]['month']} ${documents[i - 1]['year']}");
         }
         yearAndMonths.add(documents[i]);
+      }
+      if (lastPayment.isEmpty) {
+        homeView.onGetLastPayment(S
+            .of(context)
+            .noPayment);
+      } else {
+        homeView.onGetLastPayment(lastPayment);
       }
       homeView.onGetAllData(datas: yearAndMonths);
     }).toList();
