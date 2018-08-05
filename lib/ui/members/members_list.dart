@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:housing_manager/ui/members/members_payment_details.dart';
 
 class MembersList extends StatefulWidget {
   final community;
@@ -29,9 +30,32 @@ class _MembersListState extends State<MembersList> {
               if (!snapshots.hasData) return Text('Loading..');
               List<Widget> innerList = <Widget>[];
               snapshots.data.documents.map((DocumentSnapshot documentSnapshot) {
-                innerList.add(ListTile(
+                innerList.add(ExpansionTile(
                   title: Text(documentSnapshot['email']),
-                  subtitle: Text(documentSnapshot['adminStatus'].toString()),
+                  children: <Widget>[
+                    Text(documentSnapshot['adminStatus'].toString()),
+                    Row(
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () {},
+                          child: Text('Edit'),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      MembersPaymentDetails(
+                                        documentId: documentSnapshot.documentID,
+                                      )),
+                            );
+                          },
+                          child: Text('Payments'),
+                        )
+                      ],
+                    )
+                  ],
                 ));
               }).toList();
               return Container(
