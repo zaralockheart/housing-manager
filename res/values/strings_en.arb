@@ -7,5 +7,11 @@
   "createCommunity": "Create Community!",
   "joinCommunity": "Join Community!",
   "communityHint": "Please enter your community",
-  "noPayment": "No last payment detected, you sure you ever pay?"
+  "noPayment": "No last payment detected, you sure you ever pay?",
+  "fullName": "Full name",
+  "address": "Address",
+  "mobileNumber": "Mobile Number",
+  "email": "Email",
+  "emailFieldEmpty": "Mandatory field (Email) is empty",
+  "emailExisted": "Email is already exist in the community"
 }

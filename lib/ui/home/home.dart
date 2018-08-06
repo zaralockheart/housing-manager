@@ -71,7 +71,10 @@ class _HomeState extends State<Home> implements HomeView {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              MembersList(community: widget.community)),
+                              MembersList(
+                                  community: widget.community,
+                                  userEmail: widget.currentUserEmail
+                              )),
                     );
                   },
                 )

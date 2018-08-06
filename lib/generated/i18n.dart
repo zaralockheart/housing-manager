@@ -21,11 +21,17 @@ class S implements WidgetsLocalizations {
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
+  String get address => "Address";
   String get communityHint => "Please enter your community";
   String get confirmPasswordHint => "Please confirm your password";
   String get createCommunity => "Create Community!";
+  String get email => "Email";
+  String get emailExisted => "Email is already exist in the community";
+  String get emailFieldEmpty => "Mandatory field (Email) is empty";
   String get emailHint => "Please enter your email";
+  String get fullName => "Full name";
   String get joinCommunity => "Join Community!";
+  String get mobileNumber => "Mobile Number";
   String get noPayment => "No last payment detected, you sure you ever pay?";
   String get passwordHint => "Please enter your password";
   String get signIn => "Sign In";
