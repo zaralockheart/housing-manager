@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:housing_manager/ui/members/add_member.dart';
+import 'package:housing_manager/ui/members/edit_members.dart';
 import 'package:housing_manager/ui/members/members_payment_details.dart';
+import 'package:housing_manager/ui/members/model/member_model.dart';
 
 class MembersList extends StatefulWidget {
   final community;
@@ -30,6 +32,23 @@ class _MembersListState extends State<MembersList> {
     );
   }
 
+  _editMembersDetails(DocumentSnapshot documentSnapshot) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              EditMembers(
+                memberModel: MemberModel(
+                    address: documentSnapshot['address'],
+                    adminStatus: documentSnapshot['adminStatus'],
+                    email: documentSnapshot['email'],
+                    fullName: documentSnapshot['fullName'],
+                    mobileNumber: documentSnapshot['mobile']),
+                documentId: documentSnapshot.documentID,
+              )),
+    );
+  }
+
   _checkIfFieldEmpty(documentSnapshot, key) =>
       documentSnapshot[key] == null || documentSnapshot[key]
           .toString()
@@ -39,7 +58,9 @@ class _MembersListState extends State<MembersList> {
       Row(
         children: <Widget>[
           FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              _editMembersDetails(documentSnapshot);
+            },
             child: Text('Edit'),
           ),
           FlatButton(
