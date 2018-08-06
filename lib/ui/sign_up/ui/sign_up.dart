@@ -69,11 +69,17 @@ class _SignUpState extends State<SignUp> {
         child: Padding(
           padding: EdgeInsets.fromLTRB(6.0, marginTop, 6.0, marginBottom),
           child: new TextFormField(
+              autofocus: hint == S
+                  .of(context)
+                  .emailHint,
+              obscureText: hint != S
+                  .of(context)
+                  .emailHint,
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: new InputDecoration(
                 labelStyle: TextStyle(color: Colors.white),
-                labelText: S.of(context).emailHint,
+                labelText: hint,
               )),
         ));
   }
@@ -87,33 +93,47 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(18.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        padding: EdgeInsets.only(top: 30.0, left: 8.0, right: 8.0),
+        child: ListView(
           children: <Widget>[
-            textInput(emailController, S.of(context).emailHint, true),
-            textInput(passwordController, S.of(context).passwordHint, null),
-            textInput(confirmPasswordController,
-                S.of(context).confirmPasswordHint, false),
-            Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: RoundedFlatButtonField(
-                  borderSide: BorderSide(color: Colors.white),
-                  hasBackgroundColor: false,
-                  buttonText: S.of(context).createCommunity,
-                  onPress: () =>
-                      _signUpUser(context: context, isCreating: true)),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: RoundedFlatButtonField(
-                  borderSide: BorderSide(color: Colors.white),
-                  hasBackgroundColor: false,
-                  buttonText: S.of(context).joinCommunity,
-                  onPress: () =>
-                      _signUpUser(context: context, isCreating: false)),
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                textInput(emailController, S
+                    .of(context)
+                    .emailHint, true),
+                textInput(passwordController, S
+                    .of(context)
+                    .passwordHint, null),
+                textInput(confirmPasswordController,
+                    S
+                        .of(context)
+                        .confirmPasswordHint, false),
+                Padding(
+                  padding: const EdgeInsets.only(top: 50.0),
+                  child: RoundedFlatButtonField(
+                      borderSide: BorderSide(color: Colors.white),
+                      hasBackgroundColor: false,
+                      buttonText: S
+                          .of(context)
+                          .createCommunity,
+                      onPress: () =>
+                          _signUpUser(context: context, isCreating: true)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 50.0),
+                  child: RoundedFlatButtonField(
+                      borderSide: BorderSide(color: Colors.white),
+                      hasBackgroundColor: false,
+                      buttonText: S
+                          .of(context)
+                          .joinCommunity,
+                      onPress: () =>
+                          _signUpUser(context: context, isCreating: false)),
+                ),
+              ],
+            )
           ],
         ),
       ));
