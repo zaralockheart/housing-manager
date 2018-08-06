@@ -78,7 +78,7 @@ class _SignUpState extends State<SignUp> {
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: new InputDecoration(
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(color: Colors.white, fontSize: 20.0),
                 labelText: hint,
               )),
         ));
