@@ -33,7 +33,6 @@ class _CommunityCreationState extends State<CommunityCreation> {
         var errorMessage = 'User is already exist in the community';
 
         if (widget.isCreating && querySnapshot.documents.isNotEmpty) {
-          print("hi!");
           if (emailLists.containsValue(widget.email)) {
             showSnackBar(context, errorMessage);
             return;
