@@ -27,19 +27,13 @@ class _CommunityCreationState extends State<CommunityCreation> {
   TextEditingController communityTextController = TextEditingController();
   var emailLists = <int, String>{};
 
-
-  @override
-  void initState() {
-    super.initState();
-    print(widget.isSigningIn);
-  }
-
   _createUser(context) async {
     await Firestore.instance.runTransaction((Transaction transaction) {
       _getReference().getDocuments().then((QuerySnapshot querySnapshot) {
         var errorMessage = 'User is already exist in the community';
 
         if (widget.isCreating && querySnapshot.documents.isNotEmpty) {
+          print("hi!");
           if (emailLists.containsValue(widget.email)) {
             showSnackBar(context, errorMessage);
             return;
@@ -54,22 +48,24 @@ class _CommunityCreationState extends State<CommunityCreation> {
             }
           }
         } else {
-          if (widget.isSigningIn) {
-            _getReference().snapshots().map((QuerySnapshot snapshot) {
-              snapshot.documents.map((DocumentSnapshot docSnapshot) {
-                if (docSnapshot['email'] == widget.email) {
-                  SharedPreferences
-                      .getInstance()
-                      .then((SharedPreferences sharedPreference) {
-                    sharedPreference.setStringList(
-                        'community', [communityTextController.text]);
-                    _navigateToHome();
-                  });
-                }
-              }).toList();
+          Map<String, String> emailMap = <String, String>{};
+          _getReference().snapshots().map((QuerySnapshot snapshot) {
+            snapshot.documents.map((DocumentSnapshot docSnapshot) {
+              if (docSnapshot['email'] == widget.email) {
+                emailMap[docSnapshot['email']] = docSnapshot['email'];
+                SharedPreferences
+                    .getInstance()
+                    .then((SharedPreferences sharedPreference) {
+                  sharedPreference.setStringList(
+                      'community', [communityTextController.text]);
+                  _navigateToHome();
+                });
+              }
             }).toList();
-          } else {
-            _createCommunity(_getReference());
+          }).toList();
+
+          if (emailMap.isEmpty) {
+            showSnackBar(context, 'Unable to find user in this community');
           }
         }
       });

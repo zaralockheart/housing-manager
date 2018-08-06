@@ -53,7 +53,10 @@ class _HomeState extends State<Home> implements HomeView {
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshots) {
-            if (!snapshots.hasData) return Text('Loading!!!');
+            if (!snapshots.hasData)
+              return Scaffold(
+                body: Text(('Loading!!!')),
+              );
 
             var docId = snapshots.data.documents[0].documentID;
             presenter.checkIfPaymentListExist(
@@ -73,8 +76,7 @@ class _HomeState extends State<Home> implements HomeView {
                           builder: (context) =>
                               MembersList(
                                   community: widget.community,
-                                  userEmail: widget.currentUserEmail
-                              )),
+                                  userEmail: widget.currentUserEmail)),
                     );
                   },
                 )
@@ -90,6 +92,7 @@ class _HomeState extends State<Home> implements HomeView {
                         length: 3,
                         child: Scaffold(
                           appBar: AppBar(
+                            automaticallyImplyLeading: false,
                             elevation: 0.0,
                             actions: <Widget>[],
                             title: TabBar(
@@ -108,7 +111,10 @@ class _HomeState extends State<Home> implements HomeView {
                           ),
                           body: TabBarView(
                             children: [
-                              HomeUserDetails(snapshot: snapshot),
+                              HomeUserDetails(
+                                snapshot: snapshot,
+                                name: snapshots.data.documents[0]['fullName'],
+                              ),
                               HomePaymentList(),
                             ],
                           ),

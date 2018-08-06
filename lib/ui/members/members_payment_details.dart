@@ -50,9 +50,20 @@ class _MembersPaymentDetailsState extends State<MembersPaymentDetails> {
           if (documentSnapshot.data['year'] == yearList[j]) {
             return FlatButton(
               onPressed: () {
-                print(documentSnapshot.data['year'] == yearList[j]);
+                Firestore.instance.runTransaction((
+                    Transaction transaction) async {
+                  await transaction.update(documentSnapshot.reference,
+                      {'status': !documentSnapshot.data['status']}).catchError(
+                      print);
+                });
               },
-              child: Text(documentSnapshot.data['month']),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(documentSnapshot.data['month']),
+                  Text(documentSnapshot.data['status'].toString())
+                ],
+              ),
             );
           } else {
             return Container();

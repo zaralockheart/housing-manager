@@ -6,8 +6,10 @@ import 'package:housing_manager/generated/i18n.dart';
 class HomeUserDetails extends StatefulWidget {
   final snapshot;
   final lastPaymentString;
+  final name;
 
-  const HomeUserDetails({Key key, this.snapshot, this.lastPaymentString})
+  const HomeUserDetails(
+      {Key key, this.snapshot, this.lastPaymentString, this.name})
       : super(key: key);
 
   @override
@@ -25,22 +27,31 @@ class _HomeUserDetailsState extends State<HomeUserDetails> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Hi ${widget.snapshot.data.displayName}',
-              style: TextStyle(fontSize: 20.0)),
-          Text(
-            'Your last payment is at',
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Hi ${widget.name}',
+                style: TextStyle(fontSize: 20.0)),
           ),
-          StreamBuilder(
-              stream: mainBloc.homeBloc.lastPaymentMonthStream,
-              builder: (BuildContext context, AsyncSnapshot snapshot) =>
-              snapshot.hasData
-                  ? Text(snapshot.data,
-                  style: TextStyle(
-                      fontSize: 40.0, fontWeight: FontWeight.bold))
-                  : Text(S
-                  .of(context)
-                  .communityHint))
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Your last payment is at',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: StreamBuilder(
+                stream: mainBloc.homeBloc.lastPaymentMonthStream,
+                builder: (BuildContext context, AsyncSnapshot snapshot) =>
+                snapshot.hasData
+                    ? Text(snapshot.data,
+                    style: TextStyle(
+                        fontSize: 40.0, fontWeight: FontWeight.bold))
+                    : Text(S
+                    .of(context)
+                    .communityHint)),
+          )
         ],
       ),
     );
