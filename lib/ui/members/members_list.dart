@@ -44,7 +44,7 @@ class _MembersListState extends State<MembersList> {
                     email: documentSnapshot['email'],
                     fullName: documentSnapshot['fullName'],
                     mobileNumber: documentSnapshot['mobile']),
-                documentId: documentSnapshot.documentID,
+                documentReference: documentSnapshot.reference,
               )),
     );
   }
